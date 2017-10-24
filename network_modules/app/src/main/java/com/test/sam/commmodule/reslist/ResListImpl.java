@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Request;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -20,6 +23,13 @@ import rx.Observable;
 public class ResListImpl implements ResListInteractor{
 
     private RequestHandler requestHandler;
+
+    //use retrofit and rx to asynchrously get results from server
+    public interface retrofitServiceApi {
+        @GET("/list/items")
+        Observable<List<ModelItem>> getItems(@Header("Authorization") String accessToken,
+                                             @Query("userId") String userId);
+    }
 
     ResListImpl (RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
