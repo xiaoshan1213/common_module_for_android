@@ -6,6 +6,7 @@ import com.test.sam.commmodule.Models.ModelItem;
 
 import java.util.List;
 
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,6 +32,27 @@ public class ItemListPresenterImpl implements ItemListPresenter {
         subscription = resListInteractor.fetchItem().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onItemFetchSuccess, this::onItemFetchFail);
+
+        /*
+        same idea of different way (no other function of onnext and oncompelte) doing subscribe
+         */
+        subscription = resListInteractor.fetchItem().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<ModelItem>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<ModelItem> modelItems) {
+                        view.showItems(modelItems);
+                    }
+                });
     }
 
     @Override
